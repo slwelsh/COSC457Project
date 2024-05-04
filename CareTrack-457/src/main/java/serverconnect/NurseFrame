@@ -1,0 +1,139 @@
+import javax.swing.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class NurseManagementFrame extends JFrame {
+    private JTextField guestIdTextField;
+    private JTextField nurseIdTextField;
+
+    public NurseManagementFrame() {
+        try {
+            initialize();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initialize() throws SQLException {
+        setTitle("Manage Nurse ID");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        guestIdTextField = new JTextField(10);
+        nurseIdTextField = new JTextField(10);
+
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(e -> addNurseId());
+
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(e -> deleteNurseId());
+
+        JButton editButton = new JButton("Edit");
+        editButton.addActionListener(e -> editNurseId());
+
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Enter Patient SSN:"));
+        panel.add(guestIdTextField);
+        panel.add(new JLabel("Enter Nurse SSN:"));
+        panel.add(nurseIdTextField);
+        panel.add(addButton);
+        panel.add(deleteButton);
+        panel.add(editButton);
+
+        getContentPane().add(panel);
+        setSize(400, 200);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void addNurseId() {
+        String guestId = guestIdTextField.getText();
+        String nurseId = nurseIdTextField.getText();
+
+        // Database connection details
+        final String username = "admin";
+        final String password = "COSC*ncm6n";
+        final String url = "jdbc:mysql://34.123.199.211:3306/?serverTimezone=EST&useSSL=false";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "UPDATE caretrackdb.Guest SET NurseId = ? WHERE GuestId = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, nurseId);
+                preparedStatement.setString(2, guestId);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Nurse ID added successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to add Nurse ID.");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error adding Nurse ID.");
+        }
+    }
+
+    private void deleteNurseId() {
+        String guestId = guestIdTextField.getText();
+
+        // Database connection details
+        final String username = "admin";
+        final String password = "COSC*ncm6n";
+        final String url = "jdbc:mysql://34.123.199.211:3306/?serverTimezone=EST&useSSL=false";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "UPDATE caretrackdb.Guest SET NurseId = NULL WHERE GuestId = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, guestId);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Nurse ID deleted successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete Nurse ID.");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error deleting Nurse ID.");
+        }
+    }
+
+    private void editNurseId() {
+        String guestId = guestIdTextField.getText();
+        String nurseId = nurseIdTextField.getText();
+
+        // Database connection details
+        final String username = "admin";
+        final String password = "COSC*ncm6n";
+        final String url = "jdbc:mysql://34.123.199.211:3306/?serverTimezone=EST&useSSL=false";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "UPDATE caretrackdb.Guest SET NurseId = ? WHERE GuestId = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, nurseId);
+                preparedStatement.setString(2, guestId);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Nurse ID updated successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update Nurse ID.");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error updating Nurse ID.");
+        }
+    }
+
+    public static void main(String[] args) {
+        new VisitFrame();
+    }
+}
