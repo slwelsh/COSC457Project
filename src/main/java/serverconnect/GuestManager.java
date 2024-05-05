@@ -77,7 +77,7 @@ public class GuestManager extends JFrame {
 
         final String ID = "root";
         final String PW = "COSC*ncm6n";
-        final String SERVER = "jdbc:mysql://34.123.199.211:3306/caretrackdb?serverTimezone=EST";
+        final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
 
         try (Connection con = DriverManager.getConnection(SERVER, ID, PW)) {
             String query = "INSERT INTO guests (GuestId, Name, RelationshipToPatient, PhoneNumber, Email, Insurance, Address, PSSN) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

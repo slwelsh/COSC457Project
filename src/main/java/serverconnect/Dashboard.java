@@ -157,7 +157,9 @@ public class Dashboard extends JFrame {
     private static void createPerson() {
         //JFrame temp = new EmployeeRegistrationFrame("Employee Registration");
         //temp.setVisible(true);
-      System.out.println("Creating Person...");
+        CreatePerson createPersonFrame = new CreatePerson();
+        createPersonFrame.setVisible(true);
+        System.out.println("Creating Person...");
     }
 
     private static void addVisit() {
