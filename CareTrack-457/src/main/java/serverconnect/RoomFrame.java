@@ -18,7 +18,7 @@ public class RoomFrame extends JFrame{
     private void initialize() throws SQLException {
         
 
-        setTitle("Add Visit");
+        setTitle("Edit Room");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         patientSSNTextField = new JTextField(10);
@@ -34,8 +34,6 @@ public class RoomFrame extends JFrame{
         this.setSize(300, 150);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-
-        
     }
 
     private void checkGuest() {
@@ -70,8 +68,8 @@ public class RoomFrame extends JFrame{
         submitButton.addActionListener(e -> {
             try {
                 submitDetails(roomTextField.getText(), id);
+                dispose();
             } catch (SQLException e1) {
-              
                 e1.printStackTrace();
             }
         });
@@ -106,7 +104,6 @@ public class RoomFrame extends JFrame{
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to Update Room.");
                 }
-            
             
             }
 

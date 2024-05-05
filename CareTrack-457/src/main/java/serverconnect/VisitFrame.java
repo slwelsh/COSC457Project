@@ -129,6 +129,6 @@ public class VisitFrame extends JFrame{
         }
 
         this.getContentPane().removeAll();
-        initialize();
+        dispose();
     }
 }
