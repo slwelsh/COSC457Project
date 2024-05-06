@@ -103,7 +103,10 @@ public class AllowFrame extends JFrame{
                 int rowsAffected = preparedStatement.executeUpdate();
 
                 if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(AllowFrame.this, "Allowance Added!");
+                    JOptionPane.showMessageDialog(AllowFrame.this, 
+                                "Allowance Added!\n" +
+                                "Patients CANNOT use this money on;\n" +
+                                "DRUGS, ALCOHOL, TOBACCO, or GAMBLING.");
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to Add Allowance.");
                 }
