@@ -19,7 +19,6 @@ public class AllowFrame extends JFrame{
         
 
         setTitle("Add Allowance");
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         patientSSNTextField = new JTextField(10);
         JButton checkButton = new JButton("Submit");
@@ -34,8 +33,6 @@ public class AllowFrame extends JFrame{
         this.setSize(300, 150);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-
-        
     }
 
    
@@ -67,12 +64,12 @@ public class AllowFrame extends JFrame{
     private void showDetailsScreen(String id) {
         this.getContentPane().removeAll(); 
 
-        JTextField aIDTextField = new JTextField(10);
         JTextField amountTextField = new JTextField(10);
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(e -> {
             try {
-                submitDetails(aIDTextField.getText(), amountTextField.getText(), id);
+                submitDetails(amountTextField.getText(), id);
+                dispose();
             } catch (SQLException e1) {
               
                 e1.printStackTrace();
@@ -81,8 +78,6 @@ public class AllowFrame extends JFrame{
 
     
         JPanel panel = new JPanel();
-        panel.add(new JLabel("Allowance ID:"));
-        panel.add(aIDTextField);
         panel.add(new JLabel("Amount:"));
         panel.add(amountTextField);
         panel.add(submitButton);
@@ -92,19 +87,18 @@ public class AllowFrame extends JFrame{
         this.repaint();
     }
 
-    private void submitDetails(String aID, String amount, String SSN) throws SQLException {
+    private void submitDetails(String amount, String SSN) throws SQLException {
 
         final String username = "admin";
         final String password = "COSC*ncm6n";
         final String url = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
         
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "insert into caretrackdb.Allowance values(?, ?, ?)";
+            String sql = "insert into caretrackdb.Allowance values(?, ?)";
             
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, aID);
+                preparedStatement.setString(1, amount);
                 preparedStatement.setString(2, SSN);
-                preparedStatement.setString(3, amount);
 
                 int rowsAffected = preparedStatement.executeUpdate();
 

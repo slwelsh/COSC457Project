@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
     public static void main(String[] args) {
-		final String ID = "admin";
+		final String ID = "root";
 		final String PW = "COSC*ncm6n";
 		final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
 

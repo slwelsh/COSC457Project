@@ -5,28 +5,30 @@ import java.awt.*;
 import java.sql.*;
 
 public class Dashboard extends JFrame {
-  
-    public static void main(String[] args) {
-        new Dashboard("Dashboard", new User("1234567", "Nurse"));
-    }
     private JTextArea resultColsArea;
     private JTextArea resultTextArea;
     private String userID;
 
     public Dashboard(String title, User user) {
         userID = user.getCurrentUser(); 
-        
-        setTitle(title);
 
+        setTitle(title);
+        
+        //Panels
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new FlowLayout());
         headerPanel.setBackground(Color.LIGHT_GRAY);
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new GridLayout(1, 3));
-
+        
         JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BorderLayout());
 
+        JPanel typePanel = new JPanel();
+        JPanel logPanel = new JPanel();
+
+        //User profile info
         resultTextArea = new JTextArea();
         resultTextArea.setBounds(150,120,40,40);
         resultTextArea.setEditable(false);
@@ -36,6 +38,7 @@ public class Dashboard extends JFrame {
 
         dashboardView(); 
 
+        //Header info
         JLabel titleLabel = new JLabel("CareTrack");
         titleLabel.setBounds(20, 30, 500, 40);
         titleLabel.setFont(new Font("Calibri", Font.BOLD, 32));
@@ -66,37 +69,64 @@ public class Dashboard extends JFrame {
         updatePerson.addActionListener(e -> updatePerson());
         headerPanel.add(updatePerson);
 
-        JLabel manLabel = new JLabel("\n\nManagement Actions:");
-        manLabel.setBounds(590, 30, 75, 40);
-        manLabel.setFont(new Font("Calibri", Font.PLAIN, 15));
-        buttonsPanel.add(manLabel);
+        JButton logoutButton = new JButton("Log out");
+        logoutButton.setBounds(400, 30, 175, 40);
+        logoutButton.addActionListener(e -> logout(this));
+        logPanel.add(logoutButton);
 
-        JButton visitsButton = new JButton("Add Visit");
-        visitsButton.setBounds(400, 30, 175, 40);
-        visitsButton.addActionListener(e -> addVisit());
-        buttonsPanel.add(visitsButton);
+        //User Type Actions
+        if(user.getCurrentUserType().equals("Management")) {
+            JLabel manLabel = new JLabel("\n\nManagement Actions:");
+            manLabel.setBounds(590, 30, 75, 40);
+            manLabel.setFont(new Font("Calibri", Font.PLAIN, 15));
+            typePanel.add(manLabel);
 
-        JButton allowButton = new JButton("Add Allowance");
-        allowButton.setBounds(400, 30, 175, 40);
-        allowButton.addActionListener(e -> addAllow());
-        buttonsPanel.add(allowButton);
+            JButton visitsButton = new JButton("Add Visit");
+            visitsButton.setBounds(400, 30, 175, 40);
+            visitsButton.addActionListener(e -> addVisit());
+            typePanel.add(visitsButton);
 
-        JButton roomButton = new JButton("Edit Patient Room");
-        roomButton.setBounds(400, 30, 175, 40);
-        roomButton.addActionListener(e -> editRoom());
-        buttonsPanel.add(roomButton);
+            JButton allowButton = new JButton("Add Allowance");
+            allowButton.setBounds(400, 30, 175, 40);
+            allowButton.addActionListener(e -> addAllow());
+            typePanel.add(allowButton);
 
+            JButton roomButton = new JButton("Edit Patient Room");
+            roomButton.setBounds(400, 30, 175, 40);
+            roomButton.addActionListener(e -> editRoom());
+            typePanel.add(roomButton);
+
+        } else if (user.getCurrentUserType().equals("Nurse")) {
+            JLabel nurseLabel = new JLabel("\n\nNurse Actions:");
+            nurseLabel.setBounds(590, 30, 75, 40);
+            nurseLabel.setFont(new Font("Calibri", Font.PLAIN, 15));
+            typePanel.add(nurseLabel);
+
+            JButton treatsButton = new JButton("Currently Treating");
+            treatsButton.setBounds(400, 30, 175, 40);
+            treatsButton.addActionListener(e -> addTreat(userID));
+            typePanel.add(treatsButton);
+
+        } else if(user.getCurrentUserType().equals("Doctor")) {
+            JLabel docLabel = new JLabel("\n\nDoctor Actions:");
+            docLabel.setBounds(590, 30, 75, 40);
+            docLabel.setFont(new Font("Calibri", Font.PLAIN, 15));
+            typePanel.add(docLabel);
+        }
+
+        //GUI Formatting
+        buttonsPanel.add(typePanel, BorderLayout.CENTER);
+        buttonsPanel.add(logPanel, BorderLayout.SOUTH);
         contentPanel.add(resultColsArea, BorderLayout.WEST);
         contentPanel.add(resultTextArea, BorderLayout.CENTER);
         contentPanel.add(buttonsPanel, BorderLayout.EAST);
-
-
-
+        
         add(headerPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
         
         setSize(700, 500);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
     }
 
@@ -137,9 +167,15 @@ public class Dashboard extends JFrame {
         }
     }
 
+    private static void logout(Dashboard c) {
+        System.out.println("Logging Out...");
+        new loginGUI().setVisible(true);
+        c.dispose();
+    }
+
     private static void updatePerson() {
         System.out.println("Update Person loading...");
-        //new UpdatePerson();
+        new UpdatePerson();
     }
 
     private static void searchPerson() {
@@ -150,8 +186,8 @@ public class Dashboard extends JFrame {
 
     private static void deletePerson() {
         System.out.println("Deleting Person...");
-        //JFrame temp = new  DeleteEmployee("Delete Employee");
-        //temp.setVisible(true);
+        JFrame temp = new  DeletePerson("Delete Person");
+        temp.setVisible(true);
     }
 
     private static void createPerson() {
@@ -160,6 +196,7 @@ public class Dashboard extends JFrame {
       System.out.println("Creating Person...");
     }
 
+    //Management Actions
     private static void addVisit() {
         System.out.println("Adding Visit...");
         JFrame temp = new VisitFrame();
@@ -175,4 +212,15 @@ public class Dashboard extends JFrame {
         JFrame temp = new RoomFrame();
         temp.setVisible(true);
     }
+
+    //Nurse Actions
+    private static void addTreat(String ID) {
+        System.out.println("Adding Treating...");
+        JFrame temp = new NurseFrame(ID);
+        temp.setVisible(true);
+    }
+
+
+    //Doctor Actions
+
 }

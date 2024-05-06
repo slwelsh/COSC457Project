@@ -24,7 +24,7 @@ class SearchFrame extends JFrame {
         IdField = new JTextField(8);
         headerPanel.add(IdField);
 
-        String[] personOptions = {"Staff", "Patient", "Guest"};
+        String[] personOptions = {"", "Staff", "Patient", "Guest"};
         JComboBox<String> jobComboBox = new JComboBox<>(personOptions);
         headerPanel.add(new JLabel("Person Type:"));
         headerPanel.add(jobComboBox);
@@ -51,6 +51,7 @@ class SearchFrame extends JFrame {
         add(contentPanel, BorderLayout.CENTER);
         
         setSize(500, 300);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
