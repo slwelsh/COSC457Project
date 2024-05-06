@@ -1,0 +1,84 @@
+import javax.swing.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class DoctorFrame extends JFrame {
+    private JTextField patientIdTextField;
+    private JTextField diagnosisTextField;
+    private JTextArea medicalConditionTextArea;
+
+    public DoctorFrame() {
+        try {
+            initialize();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initialize() throws SQLException {
+        setTitle("Doctor Frame");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        patientIdTextField = new JTextField(10);
+        diagnosisTextField = new JTextField(20);
+        medicalConditionTextArea = new JTextArea(5, 20);
+
+        JButton treatButton = new JButton("Treat Diagnosis");
+        treatButton.addActionListener(e -> treatDiagnosis());
+
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Enter Patient ID:"));
+        panel.add(patientIdTextField);
+        panel.add(new JLabel("Enter Diagnosis:"));
+        panel.add(diagnosisTextField);
+        panel.add(treatButton);
+
+        getContentPane().add(panel);
+        getContentPane().add(new JScrollPane(medicalConditionTextArea));
+        setSize(400, 300);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void treatDiagnosis() {
+        String patientId = patientIdTextField.getText();
+        String diagnosis = diagnosisTextField.getText();
+
+        // Database connection details
+        final String username = "admin";
+        final String password = "COSC*ncm6n";
+        final String url = "jdbc:mysql://34.123.199.211:3306/?serverTimezone=EST&useSSL=false";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            // Insert diagnosis into diagnosis table
+            String insertDiagnosisSQL = "INSERT INTO caretrackdb.Diagnosis (PatientId, Diagnosis) VALUES (?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertDiagnosisSQL)) {
+                preparedStatement.setString(1, patientId);
+                preparedStatement.setString(2, diagnosis);
+                preparedStatement.executeUpdate();
+            }
+
+            // Update medical condition in patient table
+            String updateMedicalConditionSQL = "UPDATE caretrackdb.Patient SET MedicalCondition = ? WHERE PatientId = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateMedicalConditionSQL)) {
+                preparedStatement.setString(1, diagnosis);
+                preparedStatement.setString(2, patientId);
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    medicalConditionTextArea.append("Patient ID: " + patientId + "\n");
+                    medicalConditionTextArea.append("Diagnosis: " + diagnosis + "\n\n");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to treat diagnosis.");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error treating diagnosis.");
+        }
+    }
+
+    public static void main(String[] args) {
+        new DoctorFrame();
+    }
+}
