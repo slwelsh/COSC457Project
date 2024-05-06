@@ -112,6 +112,16 @@ public class Dashboard extends JFrame {
             docLabel.setBounds(590, 30, 75, 40);
             docLabel.setFont(new Font("Calibri", Font.PLAIN, 15));
             typePanel.add(docLabel);
+
+            JButton medconButton = new JButton("Add Medical Condition");
+            medconButton.setBounds(400, 30, 175, 40);
+            medconButton.addActionListener(e -> addMedCond(userID));
+            typePanel.add(medconButton);
+
+            JButton diagnosisButton = new JButton("Add Diagnosis");
+            diagnosisButton.setBounds(400, 30, 175, 40);
+            diagnosisButton.addActionListener(e -> addDiagnosis(userID));
+            typePanel.add(diagnosisButton);
         }
 
         //GUI Formatting
@@ -222,5 +232,16 @@ public class Dashboard extends JFrame {
 
 
     //Doctor Actions
+    private static void addMedCond(String ID) {
+        System.out.println("Adding Medical Condition...");
+        JFrame temp = new AddMedCond();
+        temp.setVisible(true);
+    }
+
+    private static void addDiagnosis(String ID) {
+        System.out.println("Adding Diagnosis...");
+        JFrame temp = new AddDiagnosis(ID);
+        temp.setVisible(true);
+    }
 
 }

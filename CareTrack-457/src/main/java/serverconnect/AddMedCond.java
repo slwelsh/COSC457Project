@@ -1,0 +1,73 @@
+package serverconnect;
+
+import javax.swing.*;
+import java.sql.*;
+
+public class AddMedCond extends JFrame {
+
+    private JTextField medicalConditionTextField;
+    private JTextField medicationTextField;
+
+    public AddMedCond() {
+        try {
+            initialize();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initialize() throws SQLException {
+
+
+        setTitle("Add Medical Condition");
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        medicalConditionTextField = new JTextField(20);
+        medicationTextField = new JTextField(20);
+
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(e -> addMedicalCondition());
+
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Medical Condition:"));
+        panel.add(medicalConditionTextField);
+        panel.add(new JLabel("Medication:"));
+        panel.add(medicationTextField);
+        panel.add(addButton);
+
+        getContentPane().add(panel);
+        setSize(400, 200);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void addMedicalCondition() {
+        String medicalCondition = medicalConditionTextField.getText();
+        String medication = medicationTextField.getText();
+
+        final String username = "admin";
+        final String password = "COSC*ncm6n";
+        final String url = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "INSERT INTO caretrackdb.MedCondition (Name, Medication) VALUES (?, ?)";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, medicalCondition);
+                preparedStatement.setString(2, medication);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Medical condition added!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to add medical condition.");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to add medical condition.");
+        }
+        dispose();
+    }
+}

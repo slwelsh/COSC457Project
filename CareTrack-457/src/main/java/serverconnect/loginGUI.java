@@ -64,12 +64,20 @@ public class loginGUI extends JFrame {
         final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
         try (Connection con = DriverManager.getConnection(SERVER, ID, PW)) {
             try (Statement statement = con.createStatement()) {
+                //check username and password
                     String query = "SELECT * FROM caretrackdb.Login WHERE User= '"+username+"' AND Pass= '"+password+"'";
                     ResultSet resultSet = statement.executeQuery(query);
                     while (resultSet.next()) {
                         String userID = resultSet.getString("StaffId");
                         String userType = roleComboBox.getSelectedItem().toString();
-                        return new User(userID, userType);
+                        try (Statement statement2 = con.createStatement()) {
+                            //check correct role
+                            String query2 =  "SELECT * FROM caretrackdb."+userType+" WHERE StaffId= '"+userID+"'";
+                            ResultSet resultSet2 = statement2.executeQuery(query2);
+                            while (resultSet2.next()) {
+                                return new User(userID, userType);
+                            }
+                        }
                     }
                 }
             } catch (SQLException ex) {
