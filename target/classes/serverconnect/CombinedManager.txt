@@ -1,0 +1,521 @@
+package serverconnect;
+
+// import javax.swing.*;
+// import java.awt.*;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
+// import java.sql.Connection;
+// import java.sql.DriverManager;
+// import java.sql.PreparedStatement;
+// import java.sql.SQLException;
+
+// public class CombinedManager extends JFrame {
+//     private JTextField staffIdTextField, nameTextField, lNameTextField, ssnTextField, dobTextField, addressTextField, numberTextField, salaryTextField, scheduleTextField;
+//     private JTextField specialtyTextField, licenseNumberTextField;
+//     private JTextField jobTitleTextField, departmentTextField;
+//     private JComboBox<String> staffTypeComboBox;
+
+//     public CombinedManager() {
+//         setTitle("Add Staff to Database");
+//         setSize(400, 500);
+//         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//         setLocationRelativeTo(null);
+
+//         JPanel panel = new JPanel(new GridLayout(12, 2));
+
+//         panel.add(new JLabel("Staff Type:"));
+//         String[] staffTypes = {"Staff", "Nurse", "Doctor", "Management"};
+//         staffTypeComboBox = new JComboBox<>(staffTypes);
+//         panel.add(staffTypeComboBox);
+
+//         panel.add(new JLabel("Staff ID:"));
+//         staffIdTextField = new JTextField();
+//         panel.add(staffIdTextField);
+
+//         panel.add(new JLabel("Name:"));
+//         nameTextField = new JTextField();
+//         panel.add(nameTextField);
+
+//         panel.add(new JLabel("Last Name:"));
+//         lNameTextField = new JTextField();
+//         panel.add(lNameTextField);
+
+//         panel.add(new JLabel("SSN:"));
+//         ssnTextField = new JTextField();
+//         panel.add(ssnTextField);
+
+//         panel.add(new JLabel("Date of Birth (YYYY-MM-DD):"));
+//         dobTextField = new JTextField();
+//         panel.add(dobTextField);
+
+//         panel.add(new JLabel("Address:"));
+//         addressTextField = new JTextField();
+//         panel.add(addressTextField);
+
+//         panel.add(new JLabel("Phone Number:"));
+//         numberTextField = new JTextField();
+//         panel.add(numberTextField);
+
+//         panel.add(new JLabel("Salary:"));
+//         salaryTextField = new JTextField();
+//         panel.add(salaryTextField);
+
+//         panel.add(new JLabel("Schedule:"));
+//         scheduleTextField = new JTextField();
+//         panel.add(scheduleTextField);
+
+//         staffTypeComboBox.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 String selectedStaffType = (String) staffTypeComboBox.getSelectedItem();
+//                 if ("Nurse".equals(selectedStaffType)) {
+//                     addNurseFields(panel);
+//                 } else if ("Doctor".equals(selectedStaffType)) {
+//                     addDoctorFields(panel);
+//                 } else if ("Management".equals(selectedStaffType)) {
+//                     addManagementFields(panel);
+//                 } else {
+//                     removeAdditionalFields(panel);
+//                 }
+//             }
+//         });
+
+//         JButton addButton = new JButton("Add Staff");
+//         addButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 addStaffToDatabase();
+//             }
+//         });
+//         panel.add(addButton);
+
+//         add(panel);
+
+//         setVisible(true);
+//     }
+
+//     private void addNurseFields(JPanel panel) {
+//         panel.add(new JLabel("License Number:"));
+//         licenseNumberTextField = new JTextField();
+//         panel.add(licenseNumberTextField);
+
+//         panel.revalidate();
+//         panel.repaint();
+//     }
+
+//     private void addDoctorFields(JPanel panel) {
+//         panel.add(new JLabel("Specialty:"));
+//         specialtyTextField = new JTextField();
+//         panel.add(specialtyTextField);
+
+//         panel.revalidate();
+//         panel.repaint();
+//     }
+
+//     private void addManagementFields(JPanel panel) {
+//         panel.add(new JLabel("Job Title:"));
+//         jobTitleTextField = new JTextField();
+//         panel.add(jobTitleTextField);
+
+//         panel.add(new JLabel("Department:"));
+//         departmentTextField = new JTextField();
+//         panel.add(departmentTextField);
+
+//         panel.revalidate();
+//         panel.repaint();
+//     }
+
+//     private void removeAdditionalFields(JPanel panel) {
+//         if (licenseNumberTextField != null) {
+//             panel.remove(licenseNumberTextField);
+//             licenseNumberTextField = null;
+//         }
+//         if (specialtyTextField != null) {
+//             panel.remove(specialtyTextField);
+//             specialtyTextField = null;
+//         }
+//         if (jobTitleTextField != null) {
+//             panel.remove(jobTitleTextField);
+//             jobTitleTextField = null;
+//         }
+//         if (departmentTextField != null) {
+//             panel.remove(departmentTextField);
+//             departmentTextField = null;
+//         }
+
+//         panel.revalidate();
+//         panel.repaint();
+//     }
+
+//     private void addStaffToDatabase() {
+//         // Get values from text fields
+//         String staffId = staffIdTextField.getText();
+//         String name = nameTextField.getText();
+//         String lName = lNameTextField.getText();
+//         String ssn = ssnTextField.getText();
+//         String dob = dobTextField.getText();
+//         String address = addressTextField.getText();
+//         String number = numberTextField.getText();
+//         String salary = salaryTextField.getText();
+//         String schedule = scheduleTextField.getText();
+//         String staffType = (String) staffTypeComboBox.getSelectedItem();
+
+//         // Additional fields for Nurse, Doctor, and Management
+//         String additionalField1 = "";
+//         String additionalField2 = "";
+
+//         if ("Nurse".equals(staffType)) {
+//             additionalField1 = licenseNumberTextField.getText();
+//         } else if ("Doctor".equals(staffType)) {
+//             additionalField1 = specialtyTextField.getText();
+//         } else if ("Management".equals(staffType)) {
+//             additionalField1 = jobTitleTextField.getText();
+//             additionalField2 = departmentTextField.getText();
+//         }
+
+//         // Database connection details
+//         final String ID = "root";
+//         final String PW = "COSC*ncm6n";
+//         final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
+
+//         try (Connection con = DriverManager.getConnection(SERVER, ID, PW)) {
+//             String query = "";
+//             if ("Nurse".equals(staffType)) {
+//                 query = "INSERT INTO caretrackdb.Nurse (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule, LicenseNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//             } else if ("Doctor".equals(staffType)) {
+//                 query = "INSERT INTO caretrackdb.Doctor (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule, Specialty) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//             } else if ("Management".equals(staffType)) {
+//                 query = "INSERT INTO caretrackdb.Management (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule, JobTitle, Department) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//             } else {
+//                 query = "INSERT INTO caretrackdb.Staff (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//             }
+
+//             try (PreparedStatement statement = con.prepareStatement(query)) {
+//                 statement.setString(1, staffId);
+//                 statement.setString(2, name);
+//                 statement.setString(3, lName);
+//                 statement.setString(4, ssn);
+//                 statement.setString(5, dob);
+//                 statement.setString(6, address);
+//                 statement.setString(7, number);
+//                 statement.setString(8, salary);
+//                 statement.setString(9, schedule);
+
+//                 // Set additional fields based on staff type
+//                 if ("Nurse".equals(staffType)) {
+//                     statement.setString(10, additionalField1);
+//                 } else if ("Doctor".equals(staffType)) {
+//                     statement.setString(10, additionalField1);
+//                 } else if ("Management".equals(staffType)) {
+//                     statement.setString(10, additionalField1);
+//                     statement.setString(11, additionalField2);
+//                 }
+
+//                 int rowsInserted = statement.executeUpdate();
+//                 if (rowsInserted > 0) {
+//                     JOptionPane.showMessageDialog(this, staffType + " added to database successfully.");
+//                     clearFields();
+//                 } else {
+//                     JOptionPane.showMessageDialog(this, "Failed to add " + staffType.toLowerCase() + " to database.");
+//                 }
+//             }
+//         } catch (SQLException ex) {
+//             ex.printStackTrace();
+//             JOptionPane.showMessageDialog(this, "Error connecting to the database.");
+//         }
+//     }
+
+//     private void clearFields() {
+//         staffIdTextField.setText("");
+//         nameTextField.setText("");
+//         lNameTextField.setText("");
+//         ssnTextField.setText("");
+//         dobTextField.setText("");
+//         addressTextField.setText("");
+//         numberTextField.setText("");
+//         salaryTextField.setText("");
+//         scheduleTextField.setText("");
+
+//         if (licenseNumberTextField != null) {
+//             licenseNumberTextField.setText("");
+//         }
+//         if (specialtyTextField != null) {
+//             specialtyTextField.setText("");
+//         }
+//         if (jobTitleTextField != null) {
+//             jobTitleTextField.setText("");
+//         }
+//         if (departmentTextField != null) {
+//             departmentTextField.setText("");
+//         }
+//     }
+
+//     public static void main(String[] args) {
+//         SwingUtilities.invokeLater(new Runnable() {
+//             public void run() {
+//                 new CombinedManager().setVisible(true);
+//             }
+//         });
+//     }
+// }
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class CombinedManager extends JFrame {
+    private JTextField staffIdTextField, nameTextField, lNameTextField, ssnTextField, dobTextField, addressTextField, numberTextField, salaryTextField, scheduleTextField;
+    private JTextField specialtyTextField, licenseNumberTextField;
+    private JTextField jobTitleTextField, departmentTextField;
+    private JComboBox<String> staffTypeComboBox;
+
+    public CombinedManager() {
+        setTitle("Add Staff to Database");
+        setSize(400, 500);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridLayout(12, 2));
+
+        panel.add(new JLabel("Staff Type:"));
+        String[] staffTypes = {"Staff", "Nurse", "Doctor", "Management"};
+        staffTypeComboBox = new JComboBox<>(staffTypes);
+        panel.add(staffTypeComboBox);
+
+        panel.add(new JLabel("Staff ID:"));
+        staffIdTextField = new JTextField();
+        panel.add(staffIdTextField);
+
+        panel.add(new JLabel("Name:"));
+        nameTextField = new JTextField();
+        panel.add(nameTextField);
+
+        panel.add(new JLabel("Last Name:"));
+        lNameTextField = new JTextField();
+        panel.add(lNameTextField);
+
+        panel.add(new JLabel("SSN:"));
+        ssnTextField = new JTextField();
+        panel.add(ssnTextField);
+
+        panel.add(new JLabel("Date of Birth (YYYY-MM-DD):"));
+        dobTextField = new JTextField();
+        panel.add(dobTextField);
+
+        panel.add(new JLabel("Address:"));
+        addressTextField = new JTextField();
+        panel.add(addressTextField);
+
+        panel.add(new JLabel("Phone Number:"));
+        numberTextField = new JTextField();
+        panel.add(numberTextField);
+
+        panel.add(new JLabel("Salary:"));
+        salaryTextField = new JTextField();
+        panel.add(salaryTextField);
+
+        panel.add(new JLabel("Schedule:"));
+        scheduleTextField = new JTextField();
+        panel.add(scheduleTextField);
+
+        staffTypeComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedStaffType = (String) staffTypeComboBox.getSelectedItem();
+                if ("Nurse".equals(selectedStaffType)) {
+                    addNurseFields(panel);
+                } else if ("Doctor".equals(selectedStaffType)) {
+                    addDoctorFields(panel);
+                } else if ("Management".equals(selectedStaffType)) {
+                    addManagementFields(panel);
+                } else {
+                    removeAdditionalFields(panel);
+                }
+            }
+        });
+
+        JButton addButton = new JButton("Add Staff");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addStaffToDatabase();
+            }
+        });
+
+        panel.add(new JLabel());
+        panel.add(addButton);
+
+        add(panel);
+
+        setVisible(true);
+    }
+
+    private void addNurseFields(JPanel panel) {
+        panel.add(new JLabel("License Number:"));
+        licenseNumberTextField = new JTextField();
+        panel.add(licenseNumberTextField);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void addDoctorFields(JPanel panel) {
+        panel.add(new JLabel("Specialty:"));
+        specialtyTextField = new JTextField();
+        panel.add(specialtyTextField);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void addManagementFields(JPanel panel) {
+        panel.add(new JLabel("Job Title:"));
+        jobTitleTextField = new JTextField();
+        panel.add(jobTitleTextField);
+
+        panel.add(new JLabel("Department:"));
+        departmentTextField = new JTextField();
+        panel.add(departmentTextField);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void removeAdditionalFields(JPanel panel) {
+        if (licenseNumberTextField != null) {
+            panel.remove(licenseNumberTextField);
+            licenseNumberTextField = null;
+        }
+        if (specialtyTextField != null) {
+            panel.remove(specialtyTextField);
+            specialtyTextField = null;
+        }
+        if (jobTitleTextField != null) {
+            panel.remove(jobTitleTextField);
+            jobTitleTextField = null;
+        }
+        if (departmentTextField != null) {
+            panel.remove(departmentTextField);
+            departmentTextField = null;
+        }
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void addStaffToDatabase() {
+        // Get values from text fields
+        String staffId = staffIdTextField.getText();
+        String name = nameTextField.getText();
+        String lName = lNameTextField.getText();
+        String ssn = ssnTextField.getText();
+        String dob = dobTextField.getText();
+        String address = addressTextField.getText();
+        String number = numberTextField.getText();
+        String salary = salaryTextField.getText();
+        String schedule = scheduleTextField.getText();
+        String staffType = (String) staffTypeComboBox.getSelectedItem();
+
+        // Additional fields for Nurse, Doctor, and Management
+        String additionalField1 = "";
+        String additionalField2 = "";
+
+        if ("Nurse".equals(staffType)) {
+            additionalField1 = licenseNumberTextField.getText();
+        } else if ("Doctor".equals(staffType)) {
+            additionalField1 = specialtyTextField.getText();
+        } else if ("Management".equals(staffType)) {
+            additionalField1 = jobTitleTextField.getText();
+            additionalField2 = departmentTextField.getText();
+        }
+
+        // Database connection details
+        final String ID = "root";
+        final String PW = "COSC*ncm6n";
+        final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
+
+        try (Connection con = DriverManager.getConnection(SERVER, ID, PW)) {
+            String query = "";
+            if ("Nurse".equals(staffType)) {
+                query = "INSERT INTO caretrackdb.Nurse (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule, LicenseNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            } else if ("Doctor".equals(staffType)) {
+                query = "INSERT INTO caretrackdb.Doctor (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule, Specialty) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            } else if ("Management".equals(staffType)) {
+                query = "INSERT INTO caretrackdb.Management (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule, JobTitle, Department) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            } else {
+                query = "INSERT INTO caretrackdb.Staff (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            }
+
+            try (PreparedStatement statement = con.prepareStatement(query)) {
+                statement.setString(1, staffId);
+                statement.setString(2, name);
+                statement.setString(3, lName);
+                statement.setString(4, ssn);
+                statement.setString(5, dob);
+                statement.setString(6, address);
+                statement.setString(7, number);
+                statement.setString(8, salary);
+                statement.setString(9, schedule);
+
+                // Set additional fields based on staff type
+                if ("Nurse".equals(staffType)) {
+                    statement.setString(10, additionalField1);
+                } else if ("Doctor".equals(staffType)) {
+                    statement.setString(10, additionalField1);
+                } else if ("Management".equals(staffType)) {
+                    statement.setString(10, additionalField1);
+                    statement.setString(11, additionalField2);
+                }
+
+                int rowsInserted = statement.executeUpdate();
+                if (rowsInserted > 0) {
+                    JOptionPane.showMessageDialog(this, staffType + " added to database successfully.");
+                    clearFields();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to add " + staffType.toLowerCase() + " to database.");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error connecting to the database.");
+        }
+    }
+
+    private void clearFields() {
+        staffIdTextField.setText("");
+        nameTextField.setText("");
+        lNameTextField.setText("");
+        ssnTextField.setText("");
+        dobTextField.setText("");
+        addressTextField.setText("");
+        numberTextField.setText("");
+        salaryTextField.setText("");
+        scheduleTextField.setText("");
+
+        if (licenseNumberTextField != null) {
+            licenseNumberTextField.setText("");
+        }
+        if (specialtyTextField != null) {
+            specialtyTextField.setText("");
+        }
+        if (jobTitleTextField != null) {
+            jobTitleTextField.setText("");
+        }
+        if (departmentTextField != null) {
+            departmentTextField.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new CombinedManager().setVisible(true);
+            }
+        });
+    }
+}

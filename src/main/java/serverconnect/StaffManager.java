@@ -2,8 +2,6 @@ package serverconnect;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,19 +9,27 @@ import java.sql.SQLException;
 
 public class StaffManager extends JFrame {
     protected JTextField staffIdTextField, nameTextField, lNameTextField, ssnTextField, dobTextField, addressTextField, numberTextField, salaryTextField, scheduleTextField;
+    protected JPanel panel; 
 
+    
     public StaffManager() {
+        this(new JPanel());
+    }
+
+    
+    public StaffManager(JPanel panel) {
         setTitle("Add Staff to Database");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel panel = new JPanel();
+        this.panel = panel; 
+
         panel.setLayout(new GridLayout(11, 2));
 
         panel.add(new JLabel("Staff ID:"));
         staffIdTextField = new JTextField();
         panel.add(staffIdTextField);
 
-        panel.add(new JLabel("Name:"));
+        panel.add(new JLabel("First Name:"));
         nameTextField = new JTextField();
         panel.add(nameTextField);
 
@@ -55,15 +61,6 @@ public class StaffManager extends JFrame {
         scheduleTextField = new JTextField();
         panel.add(scheduleTextField);
 
-        JButton addButton = new JButton("Add Staff");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addStaffToDatabase();
-            }
-        });
-        panel.add(addButton);
-
         add(panel);
 
         setVisible(true);
@@ -87,7 +84,7 @@ public class StaffManager extends JFrame {
         final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
 
         try (Connection con = DriverManager.getConnection(SERVER, ID, PW)) {
-            String query = "INSERT INTO staff (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO caretrackdb.Staff (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement statement = con.prepareStatement(query)) {
                 statement.setString(1, staffId);
@@ -130,7 +127,7 @@ public class StaffManager extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new StaffManager().setVisible(true);
+                new StaffManager().setVisible(true); 
             }
         });
     }

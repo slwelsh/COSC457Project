@@ -80,7 +80,7 @@ public class PatientManager extends JFrame {
         final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
 
         try (Connection con = DriverManager.getConnection(SERVER, ID, PW)) {
-            String query = "INSERT INTO patients (SSN, FName, LName, Dob, Gender, StartDate, RoomNo, NurseId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO caretrackdb.Patient (SSN, FName, LName, Dob, Gender, StartDate, RoomNo, NurseId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = con.prepareStatement(query)) {
                 statement.setString(1, ssn);
                 statement.setString(2, fName);

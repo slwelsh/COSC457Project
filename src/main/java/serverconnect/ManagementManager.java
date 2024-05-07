@@ -12,12 +12,11 @@ import java.sql.SQLException;
 public class ManagementManager extends StaffManager {
     private JTextField jobTitleTextField, departmentTextField;
 
-    public ManagementManager() {
+    public ManagementManager(JPanel panel) {
+        super(panel); // Invoke parent constructor
         setTitle("Add Management Staff to Database");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(7, 2));
+
+        panel.setLayout(new GridLayout(12, 2)); // Increase rows for the additional fields
 
         panel.add(new JLabel("Job Title:"));
         jobTitleTextField = new JTextField();
@@ -36,22 +35,12 @@ public class ManagementManager extends StaffManager {
         });
         panel.add(addButton);
 
-        add(panel);
-
         setVisible(true);
     }
 
     private void addManagementStaffToDatabase() {
         // Get values from text fields
         String staffId = staffIdTextField.getText();
-        String name = nameTextField.getText();
-        String lName = lNameTextField.getText();
-        String ssn = ssnTextField.getText();
-        String dob = dobTextField.getText();
-        String address = addressTextField.getText();
-        String number = numberTextField.getText();
-        String salary = salaryTextField.getText();
-        String schedule = scheduleTextField.getText();
         String jobTitle = jobTitleTextField.getText();
         String department = departmentTextField.getText();
 
@@ -61,25 +50,17 @@ public class ManagementManager extends StaffManager {
         final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
 
         try (Connection con = DriverManager.getConnection(SERVER, ID, PW)) {
-            String query = "INSERT INTO management (StaffId, Name, LName, SSN, Dob, Address, Number, Salary, Schedule, JobTitle, Department) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO management (StaffId, JobTitle, Department) VALUES (?, ?, ?)";
 
             try (PreparedStatement statement = con.prepareStatement(query)) {
                 statement.setString(1, staffId);
-                statement.setString(2, name);
-                statement.setString(3, lName);
-                statement.setString(4, ssn);
-                statement.setString(5, dob);
-                statement.setString(6, address);
-                statement.setString(7, number);
-                statement.setString(8, salary);
-                statement.setString(9, schedule);
-                statement.setString(10, jobTitle);
-                statement.setString(11, department);
+                statement.setString(2, jobTitle);
+                statement.setString(3, department);
 
                 int rowsInserted = statement.executeUpdate();
                 if (rowsInserted > 0) {
                     JOptionPane.showMessageDialog(this, "Management staff added to database successfully.");
-                    clearFields(); // Clear fields after successful addition
+                    clearFields(); 
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to add management staff to database.");
                 }
@@ -90,10 +71,10 @@ public class ManagementManager extends StaffManager {
         }
     }
 
-    // Overriding the clearFields method to include clearing management-specific fields
+    // Override clearFields method to include the additional fields
     @Override
     protected void clearFields() {
-        super.clearFields(); // Invoke parent class method to clear common fields
+        super.clearFields(); 
         jobTitleTextField.setText("");
         departmentTextField.setText("");
     }
@@ -102,7 +83,8 @@ public class ManagementManager extends StaffManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ManagementManager().setVisible(true);
+                JPanel panel = new JPanel(); // Create a panel
+                new ManagementManager(panel).setVisible(true); // Pass the panel to the constructor
             }
         });
     }
