@@ -64,5 +64,6 @@ public class AddDiagnosis extends JFrame {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error treating diagnosis.");
         }
+        dispose();
     }
 }
