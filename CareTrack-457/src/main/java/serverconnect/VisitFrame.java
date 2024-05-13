@@ -31,7 +31,7 @@ public class VisitFrame extends JFrame{
         panel.add(checkButton);
 
         this.getContentPane().add(panel);
-        this.setSize(300, 150);
+        this.setSize(200, 150);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
@@ -113,8 +113,6 @@ public class VisitFrame extends JFrame{
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to Add Visit.");
                 }
-            
-            
             }
 
             
@@ -124,8 +122,6 @@ public class VisitFrame extends JFrame{
             JOptionPane.showMessageDialog(this, "Error connecting to the database");
         
         System.out.println(ex);
-        
-        
         }
 
         this.getContentPane().removeAll();

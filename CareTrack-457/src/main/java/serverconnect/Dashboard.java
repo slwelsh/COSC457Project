@@ -10,35 +10,35 @@ public class Dashboard extends JFrame {
     private String userID;
 
     public Dashboard(String title, User user) {
-        userID = user.getCurrentUser(); 
+        userID = user.getCurrentUser();
 
         setTitle(title);
-        
-        //Panels
+
+        // Panels
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new FlowLayout());
         headerPanel.setBackground(Color.LIGHT_GRAY);
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new GridLayout(1, 3));
-        
+
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BorderLayout());
 
         JPanel typePanel = new JPanel();
         JPanel logPanel = new JPanel();
 
-        //User profile info
+        // User profile info
         resultTextArea = new JTextArea();
-        resultTextArea.setBounds(150,120,40,40);
+        resultTextArea.setBounds(150, 120, 40, 40);
         resultTextArea.setEditable(false);
         resultColsArea = new JTextArea();
-        resultColsArea.setBounds(150,120,40,40);
+        resultColsArea.setBounds(150, 120, 40, 40);
         resultColsArea.setEditable(false);
 
-        dashboardView(); 
+        dashboardView();
 
-        //Header info
+        // Header info
         JLabel titleLabel = new JLabel("CareTrack");
         titleLabel.setBounds(20, 30, 500, 40);
         titleLabel.setFont(new Font("Calibri", Font.BOLD, 32));
@@ -74,8 +74,8 @@ public class Dashboard extends JFrame {
         logoutButton.addActionListener(e -> logout(this));
         logPanel.add(logoutButton);
 
-        //User Type Actions
-        if(user.getCurrentUserType().equals("Management")) {
+        // User Type Actions
+        if (user.getCurrentUserType().equals("Management")) {
             JLabel manLabel = new JLabel("\n\nManagement Actions:");
             manLabel.setBounds(590, 30, 75, 40);
             manLabel.setFont(new Font("Calibri", Font.PLAIN, 15));
@@ -107,7 +107,7 @@ public class Dashboard extends JFrame {
             treatsButton.addActionListener(e -> addTreat(userID));
             typePanel.add(treatsButton);
 
-        } else if(user.getCurrentUserType().equals("Doctor")) {
+        } else if (user.getCurrentUserType().equals("Doctor")) {
             JLabel docLabel = new JLabel("\n\nDoctor Actions:");
             docLabel.setBounds(590, 30, 75, 40);
             docLabel.setFont(new Font("Calibri", Font.PLAIN, 15));
@@ -124,16 +124,16 @@ public class Dashboard extends JFrame {
             typePanel.add(diagnosisButton);
         }
 
-        //GUI Formatting
+        // GUI Formatting
         buttonsPanel.add(typePanel, BorderLayout.CENTER);
         buttonsPanel.add(logPanel, BorderLayout.SOUTH);
         contentPanel.add(resultColsArea, BorderLayout.WEST);
         contentPanel.add(resultTextArea, BorderLayout.CENTER);
         contentPanel.add(buttonsPanel, BorderLayout.EAST);
-        
+
         add(headerPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
-        
+
         setSize(700, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -142,15 +142,15 @@ public class Dashboard extends JFrame {
 
     private void dashboardView() {
         final String ID = "root";
-		final String PW = "COSC*ncm6n";
-		final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
+        final String PW = "COSC*ncm6n";
+        final String SERVER = "jdbc:mysql://34.123.199.211:3306/?serverTimezoneEST#/caretrackdb";
 
-		try (Connection con = DriverManager.getConnection(SERVER, ID, PW);){
-			System.out.println("Connection successful");
+        try (Connection con = DriverManager.getConnection(SERVER, ID, PW);) {
+            System.out.println("Connection successful");
 
-			String sql = "SELECT * FROM caretrackdb.Staff WHERE StaffId = '" + userID + "'";
+            String sql = "SELECT * FROM caretrackdb.Staff WHERE StaffId = '" + userID + "'";
             try (Statement statement = con.createStatement();
-                 ResultSet resultSet = statement.executeQuery(sql)) {
+                    ResultSet resultSet = statement.executeQuery(sql)) {
                 StringBuilder resultCols = new StringBuilder("\n\nStaff Profile:\n\n");
                 StringBuilder resultText = new StringBuilder("\n\n\n\n");
 
@@ -171,7 +171,7 @@ public class Dashboard extends JFrame {
 
                 resultColsArea.setText(resultCols.toString());
                 resultTextArea.setText(resultText.toString());
-            } 
+            }
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -196,42 +196,43 @@ public class Dashboard extends JFrame {
 
     private static void deletePerson() {
         System.out.println("Deleting Person...");
-        JFrame temp = new  DeletePerson("Delete Person");
+        JFrame temp = new DeletePerson("Delete Person");
         temp.setVisible(true);
     }
 
     private static void createPerson() {
-        //JFrame temp = new EmployeeRegistrationFrame("Employee Registration");
-        //temp.setVisible(true);
-      System.out.println("Creating Person...");
+        CreatePerson createPersonFrame = new CreatePerson();
+        createPersonFrame.setVisible(true);
+        System.out.println("Creating Person...");
     }
 
-    //Management Actions
+    // Management Actions
     private static void addVisit() {
         System.out.println("Adding Visit...");
         JFrame temp = new VisitFrame();
         temp.setVisible(true);
     }
+
     private static void addAllow() {
         System.out.println("Adding Allowance...");
         JFrame temp = new AllowFrame();
         temp.setVisible(true);
     }
+
     private static void editRoom() {
         System.out.println("Editing Room...");
         JFrame temp = new RoomFrame();
         temp.setVisible(true);
     }
 
-    //Nurse Actions
+    // Nurse Actions
     private static void addTreat(String ID) {
         System.out.println("Adding Treating...");
         JFrame temp = new NurseFrame(ID);
         temp.setVisible(true);
     }
 
-
-    //Doctor Actions
+    // Doctor Actions
     private static void addMedCond(String ID) {
         System.out.println("Adding Medical Condition...");
         JFrame temp = new AddMedCond();
